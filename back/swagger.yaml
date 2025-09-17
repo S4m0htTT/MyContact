@@ -1,0 +1,366 @@
+openapi: "3.0.0"
+info:
+  title: "Documentation API MyContact"
+  description: "Documentation API MyContact"
+  version: 1.0.0
+tags:
+  - name: User
+  - name: Contact
+paths:
+  /auth/login:
+    post:
+      tags:
+        - User
+      summary: Connexion utilisateur
+      description: Permet à un utilisateur de se connecter.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: Azerty123
+              required:
+                - email
+                - password
+      responses:
+        200:
+          description: Authentification réussi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: number
+                    example: 200
+                  errors:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: ok
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRob21hcy5oZW5yeUBlZnJlaS5uZXQiLCJpYXQiOjE3NTgxMDExNjksImV4cCI6MTc1ODE4NzU2OX0.AnmwfLBPWj6F2BnRnDPB8F9YQ-g4R14K0Xq38U1kmvU
+        400:
+          description: Champs manquants
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 400
+                  errors:
+                    type: string
+                    example: Invalid email or password.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Invalid email or password.
+        401:
+          description: Identifiants incorrects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 401
+                  errors:
+                    type: string
+                    example: Invalid email or password.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Invalid email or password.
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  errors:
+                    type: string
+                    example: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: string
+  /auth/register:
+    post:
+      tags:
+        - User
+      summary: Création d'un utilisateur
+      description: Permet de créer un utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: Azerty123
+              required:
+                - email
+                - password
+      responses:
+        201:
+          description: Création réussi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: number
+                    example: 200
+                  errors:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            format: email
+                            example: user@example.com
+                          password:
+                            type: string
+                            example: $2a$10$4zSGQQITcevNiaeaEXHimuQOmA8pguCPJPyKRH4zkKlQZjUkOQrOq
+                          lastLogin:
+                            type: string
+                            nullable: true
+                            example: null
+                          createdAt:
+                            type: string
+                            example: 2025-09-17T09:41:17.833Z
+                          updatedAt:
+                            type: string
+                            example: 2025-09-17T09:41:17.833Z
+        400:
+          description: Champs manquants
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 400
+                  errors:
+                    type: string
+                    example: Invalid email or password.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Invalid email or password.
+        409:
+          description: Utilisateur déjà existant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 409
+                  errors:
+                    type: string
+                    example: User already exists.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: User with email user@example.com already exists.
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  errors:
+                    type: string
+                    example: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: string
+  /auth/me:
+    get:
+      tags:
+        - User
+      summary: Récupération des informations d'un utilisateur
+      description: Permet de récupérer les informations d'un utilisateur
+      parameters:
+        - in: header
+          required: true
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+      responses:
+        200:
+          description: Récupération réussi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: number
+                    example: 200
+                  errors:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            format: email
+                            example: user@example.com
+                          password:
+                            type: string
+                            example: $2a$10$4zSGQQITcevNiaeaEXHimuQOmA8pguCPJPyKRH4zkKlQZjUkOQrOq
+                          lastLogin:
+                            type: string
+                            nullable: true
+                            example: 2025-09-17T09:42:32.833Z
+                          createdAt:
+                            type: string
+                            example: 2025-09-17T09:41:17.833Z
+                          updatedAt:
+                            type: string
+                            example: 2025-09-17T09:41:17.833Z
+        404:
+          description: Utilisateur non-existant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 404
+                  errors:
+                    type: string
+                    example: User nor found.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: User with email user@example.com not found.
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  errors:
+                    type: string
+                    example: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: string
