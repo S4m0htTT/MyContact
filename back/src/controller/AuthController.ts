@@ -14,7 +14,7 @@ class AuthController {
   }
 
   public async me(req: Request, res: any) {
-    const r = await this.service.me(req.body.email);
+    const r = await this.service.me(req.get("Authorization") ?? "");
     return res.status(r.statusCode).send(r);
   }
 

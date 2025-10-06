@@ -1,11 +1,16 @@
-openapi: "3.0.0"
+openapi: 3.0.4
 info:
   title: "Documentation API MyContact"
   description: "Documentation API MyContact"
   version: 1.0.0
+servers:
+  - url: http://localhost:5002/api/v1
+  - url: https://mycontact-az5e.onrender.com/api/v1
 tags:
   - name: User
+    description: Requêtes sur les utilisateurs.
   - name: Contact
+    description: Requêtes sur les contacts des utilisateurs.
 paths:
   /auth/login:
     post:
@@ -268,17 +273,6 @@ paths:
           schema:
             type: string
             example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: user@example.com
       responses:
         200:
           description: Récupération réussi
@@ -342,6 +336,464 @@ paths:
                       message:
                         type: string
                         example: User with email user@example.com not found.
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  errors:
+                    type: string
+                    example: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: string
+  /contact:
+    post:
+      tags:
+        - Contact
+      summary: Création d'un nouveau contact
+      description: Permet de créer un contact pour l'utilisateur connecté
+      parameters:
+        - in: header
+          required: true
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - phoneNumber
+              properties:
+                firstName:
+                  type: string
+                  example: Thomas
+                lastName:
+                  type: string
+                  example: Dupont
+                phoneNumber:
+                  type: string
+                  example: "+33123456789"
+      responses:
+        201:
+          description: Contact créé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: number
+                    example: 201
+                  errors:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      contact:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: 652f1c5e2f8a4b0012a3d9e1
+                          firstName:
+                            type: string
+                            example: Thomas
+                          lastName:
+                            type: string
+                            example: Dupont
+                          phoneNumber:
+                            type: string
+                            example: "+33123456789"
+                          user:
+                            type: string
+                            example: 652f1c5e2f8a4b0012a3d9d0
+                          createdAt:
+                            type: string
+                            example: 2025-10-06T09:41:17.833Z
+                          updatedAt:
+                            type: string
+                            example: 2025-10-06T09:41:17.833Z
+        404:
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 404
+                  errors:
+                    type: string
+                    example: User nor found.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: User with email user@example.com not found.
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  errors:
+                    type: string
+                    example: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: string
+  /contacts:
+    get:
+      tags:
+        - Contact
+      summary: Récupération des contacts de l'utilisateur
+      description: Permet de récupérer tous les contacts liés à l'utilisateur connecté
+      parameters:
+        - in: header
+          required: true
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+      responses:
+        200:
+          description: Liste des contacts récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: number
+                    example: 200
+                  errors:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      contact:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: 652f1c5e2f8a4b0012a3d9e1
+                          firstName:
+                            type: string
+                            example: Thomas
+                          lastName:
+                            type: string
+                            example: Dupont
+                          phoneNumber:
+                            type: string
+                            example: "+33123456789"
+                          user:
+                            type: string
+                            example: 652f1c5e2f8a4b0012a3d9d0
+                          createdAt:
+                            type: string
+                            example: 2025-10-06T09:41:17.833Z
+                          updatedAt:
+                            type: string
+                            example: 2025-10-06T09:41:17.833Z
+        404:
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 404
+                  errors:
+                    type: string
+                    example: User nor found.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: User with email user@example.com not found.
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  errors:
+                    type: string
+                    example: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: string
+  /contact/{id}:
+    patch:
+      tags:
+        - Contact
+      summary: Mise à jour d'un contact
+      description: Permet de modifier les informations d'un contact existant
+      parameters:
+        - in: header
+          required: true
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+            example: 652f1c5e2f8a4b0012a3d9e1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: Thomas
+                lastName:
+                  type: string
+                  example: Dupont
+                phoneNumber:
+                  type: string
+                  example: "+33123456789"
+      responses:
+        200:
+          description: Contact mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: number
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Contact updated successfully.
+                      updatedFields:
+                        type: object
+                        additionalProperties: true
+        403:
+          description: Action non autorisée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 403
+                  errors:
+                    type: string
+                    example:
+                      Access denied: this contact does not belong to the authenticated user.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: You are not authorized to perform this action on this contact.
+        404:
+          description: Contact non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 404
+                  errors:
+                    type: string
+                    example: Could not find contact
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Could not find contact with id 652f1c5e2f8a4b0012a3d9e1
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  errors:
+                    type: string
+                    example: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: string
+    delete:
+      tags:
+        - Contact
+      summary: Suppression d'un contact
+      description: Permet de supprimer un contact existant
+      parameters:
+        - in: header
+          required: true
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+            example: 652f1c5e2f8a4b0012a3d9e1
+      responses:
+        200:
+          description: Contact supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: number
+                    example: 200
+                  errors:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Contact deleted successfully.
+        403:
+          description: Action non autorisée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 403
+                  errors:
+                    type: string
+                    example:
+                      Access denied: this contact does not belong to the authenticated user.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: You are not authorized to perform this action on this contact.
+        404:
+          description: Contact non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 404
+                  errors:
+                    type: string
+                    example: Could not find contact
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Could not find contact with id 652f1c5e2f8a4b0012a3d9e1
         500:
           description: Internal server error
           content:

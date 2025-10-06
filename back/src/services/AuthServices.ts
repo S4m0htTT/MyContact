@@ -1,5 +1,5 @@
 import User, {IUser} from "../model/User.js";
-import {generateToken} from "../utils/JWTUtils.js";
+import {generateToken, decodeToken} from "../utils/JWTUtils.js";
 
 class AuthServices {
     constructor() {
@@ -8,9 +8,15 @@ class AuthServices {
         this.register = this.register.bind(this);
     }
 
-    async me(email: string) {
+    async me(token: string) {
         try {
-            let userDb = await User.findOne({email: email})
+
+            if (token.trim() === "") throw new Error("Token not provided");
+
+            token = token.split(" ")[1]
+            const decoded = decodeToken(token);
+
+            let userDb = await User.findOne({email: decoded.email})
                 .select("-_id")
             if (!userDb) {
                 return {
@@ -18,7 +24,7 @@ class AuthServices {
                     statusCode: 404,
                     errors: "User nor found.",
                     data: {
-                        message: `User with email ${email} not found.`,
+                        message: `User with email ${decoded.email} not found.`,
                     },
                 };
             }
@@ -39,7 +45,7 @@ class AuthServices {
                 statusCode: 500,
                 errors: err,
                 data: {
-                    message: "Error, no user found !",
+                    message: "Internal Server Error",
                 },
             };
         }
@@ -101,7 +107,7 @@ class AuthServices {
                 errors: err,
                 token: null,
                 data: {
-                    message: err
+                    message: "Internal Server Error"
                 },
             };
         }

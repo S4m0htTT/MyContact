@@ -3,6 +3,7 @@ import User from "../model/User.js";
 import jwt from "jsonwebtoken";
 import CST from "../server/constants.js";
 import AuthController from "../controller/AuthController.js";
+import ContactController from "../controller/ContactController.js";
 
 const router = Router();
 
@@ -42,5 +43,10 @@ router.post("/auth/login", AuthController.login);
 router.post("/auth/register", AuthController.register)
 
 router.get("/auth/me", authJwt, AuthController.me)
+
+router.get("/contacts", authJwt, ContactController.getUserContact)
+router.post("/contact", authJwt, ContactController.createContact)
+router.patch("/contact/:id", authJwt, ContactController.updateContact)
+router.delete("/contact/:id", authJwt, ContactController.deleteContact)
 
 export default router;
