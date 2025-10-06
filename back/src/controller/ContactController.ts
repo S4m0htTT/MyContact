@@ -9,6 +9,7 @@ class ContactController {
     constructor(service: ContactServices) {
         this.service = service;
         this.getUserContact = this.getUserContact.bind(this);
+        this.getContactById = this.getContactById.bind(this);
         this.createContact = this.createContact.bind(this);
         this.updateContact = this.updateContact.bind(this);
         this.deleteContact = this.deleteContact.bind(this);
@@ -16,6 +17,11 @@ class ContactController {
 
     async getUserContact(req: Request, res: Response) {
         const r = await this.service.getUserContact(req)
+        return res.status(r.statusCode).send(r);
+    }
+
+    async getContactById(req: Request, res: Response) {
+        const r = await this.service.getContactById(req)
         return res.status(r.statusCode).send(r);
     }
 

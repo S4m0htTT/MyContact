@@ -1,24 +1,36 @@
-import axios, {type AxiosError} from "axios";
+import {type AxiosError} from "axios";
 import {create} from "zustand";
+import {jwtDecode} from "jwt-decode";
+import type {User} from "../models/user";
+import {axiosInstance} from "../utils/utils.ts";
 
-const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    timeout: 15000
-})
+
+
+interface UserJWT {
+    email: string;
+    exp: number;
+    iat: number;
+}
 
 interface UserStore {
     userToken: undefined | string;
+    userInfo: User | null;
+    isAuthenticated: boolean;
     fetchAuthToken: (email: string, password: string) => Promise<string | Error>;
     logout: () => void;
     registerUser: (email: string, password: string) => Promise<string | Error>;
+    decodeToken: (token: string) => Promise<string | null | Error>
+    fetchUserInfo: () => Promise<void>;
 }
 
 const useUserStore = create<UserStore>((set) => ({
     userToken: undefined,
+    userInfo: null,
+    isAuthenticated: false,
     fetchAuthToken: async (email: string, password: string) => {
         try {
             const res = await axiosInstance.post("auth/login", {email, password})
-            set({userToken: res.data.data.token});
+            set({userToken: res.data.data.token, isAuthenticated: true});
             localStorage.setItem("token", res.data.data.token);
             return res.data.data.token
         } catch (err) {
@@ -32,7 +44,7 @@ const useUserStore = create<UserStore>((set) => ({
     },
     logout: () => {
         localStorage.removeItem("token");
-        set({userToken: undefined});
+        set({userToken: undefined, isAuthenticated: false, userInfo: null});
     },
     registerUser: async (email: string, password: string) => {
         try {
@@ -45,6 +57,31 @@ const useUserStore = create<UserStore>((set) => ({
                 throw new Error("Cette adresse mail est déjà utilisée.");
             }
             throw new Error("Une erreur interne est survenue.");
+        }
+    },
+    decodeToken: async (token: string) => {
+        if (token.trim() === "") return null
+        try {
+            const decoded = jwtDecode<UserJWT>(token)
+            set({isAuthenticated: true})
+            return decoded.email
+        } catch (err) {
+            console.error("Erreur lors du decode token : ", err)
+            set({userToken: undefined, isAuthenticated: false, userInfo: null})
+            throw new Error("Erreur lors du decode token.");
+        }
+    },
+    fetchUserInfo: async () => {
+        try {
+            const res = await axiosInstance.get("/auth/me", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
+
+            set({userInfo: res.data.data.user})
+        } catch (err) {
+            console.error(err)
         }
     }
 }))

@@ -515,29 +515,31 @@ paths:
                     type: object
                     properties:
                       contact:
-                        type: object
-                        properties:
-                          _id:
-                            type: string
-                            example: 652f1c5e2f8a4b0012a3d9e1
-                          firstName:
-                            type: string
-                            example: Thomas
-                          lastName:
-                            type: string
-                            example: Dupont
-                          phoneNumber:
-                            type: string
-                            example: "+33123456789"
-                          user:
-                            type: string
-                            example: 652f1c5e2f8a4b0012a3d9d0
-                          createdAt:
-                            type: string
-                            example: 2025-10-06T09:41:17.833Z
-                          updatedAt:
-                            type: string
-                            example: 2025-10-06T09:41:17.833Z
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: 652f1c5e2f8a4b0012a3d9e1
+                            firstName:
+                              type: string
+                              example: Thomas
+                            lastName:
+                              type: string
+                              example: Dupont
+                            phoneNumber:
+                              type: string
+                              example: "+33123456789"
+                            user:
+                              type: string
+                              example: 652f1c5e2f8a4b0012a3d9d0
+                            createdAt:
+                              type: string
+                              example: 2025-10-06T09:41:17.833Z
+                            updatedAt:
+                              type: string
+                              example: 2025-10-06T09:41:17.833Z
         404:
           description: Utilisateur non trouvé
           content:
@@ -553,7 +555,7 @@ paths:
                     example: 404
                   errors:
                     type: string
-                    example: User nor found.
+                    example: User not found.
                   data:
                     type: object
                     properties:
@@ -583,6 +585,113 @@ paths:
                         type: string
                         example: string
   /contact/{id}:
+    get:
+      tags:
+        - Contact
+      summary: Récupération d'un seul contact
+      description: Permet de récupérer un seul contact
+      parameters:
+        - in: header
+          required: true
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+            example: 68e36e1cade91cf8a8795150
+      responses:
+        200:
+          description: Contact récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  statusCode:
+                    type: number
+                    example: 200
+                  errors:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: object
+                    properties:
+                      contact:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: 652f1c5e2f8a4b0012a3d9e1
+                          firstName:
+                            type: string
+                            example: Thomas
+                          lastName:
+                            type: string
+                            example: Dupont
+                          phoneNumber:
+                            type: string
+                            example: "+33123456789"
+                          user:
+                            type: string
+                            example: 652f1c5e2f8a4b0012a3d9d0
+                          createdAt:
+                            type: string
+                            example: 2025-10-06T09:41:17.833Z
+                          updatedAt:
+                            type: string
+                            example: 2025-10-06T09:41:17.833Z
+        404:
+          description: Contact non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 404
+                  errors:
+                    type: string
+                    example: Contact not found.
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Could not find contact with id 68e36e1cade91cf8a8795150.
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  errors:
+                    type: string
+                    example: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: string
     patch:
       tags:
         - Contact

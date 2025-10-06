@@ -18,6 +18,7 @@ class AuthServices {
 
             let userDb = await User.findOne({email: decoded.email})
                 .select("-_id")
+                .select("-password")
             if (!userDb) {
                 return {
                     success: false,

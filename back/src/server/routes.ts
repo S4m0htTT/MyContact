@@ -45,6 +45,7 @@ router.post("/auth/register", AuthController.register)
 router.get("/auth/me", authJwt, AuthController.me)
 
 router.get("/contacts", authJwt, ContactController.getUserContact)
+router.get("/contact/:id", authJwt, ContactController.getContactById)
 router.post("/contact", authJwt, ContactController.createContact)
 router.patch("/contact/:id", authJwt, ContactController.updateContact)
 router.delete("/contact/:id", authJwt, ContactController.deleteContact)

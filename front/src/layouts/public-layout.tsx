@@ -1,13 +1,13 @@
 import {useEffect, useState} from "react";
+import { Navigate } from 'react-router-dom';
 import useUserStore from "../stores/userStore.ts";
 import Loader from "../components/loader.tsx";
-import {Navigate} from "react-router-dom";
 
-interface AuthLayoutProps {
+interface PublicLayoutProps {
     children: React.ReactNode;
 }
 
-export default function AuthLayout({children}: AuthLayoutProps) {
+export default function PublicLayout({children}: PublicLayoutProps) {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const {decodeToken, isAuthenticated} = useUserStore()
@@ -19,9 +19,9 @@ export default function AuthLayout({children}: AuthLayoutProps) {
         });
     }, []);
 
-    if (isLoading) return <Loader/>
+    if (isLoading) return <Loader />
 
-    if (!isAuthenticated) return <Navigate to="/login" replace/>;
+    if (isAuthenticated) return <Navigate to="/" replace />;
 
     return <>{children}</>;
 }

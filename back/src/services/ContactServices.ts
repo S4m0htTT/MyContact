@@ -2,10 +2,12 @@ import {Request} from "express";
 import {decodeToken} from "../utils/JWTUtils.js";
 import Contact, {IContact} from "../model/Contact.js";
 import User from "../model/User.js";
+import mongoose from "mongoose";
 
 class ContactServices {
     constructor() {
         this.getUserContact = this.getUserContact.bind(this);
+        this.getContactById = this.getContactById.bind(this);
         this.createContact = this.createContact.bind(this);
         this.updateContact = this.updateContact.bind(this);
         this.deleteContact = this.deleteContact.bind(this);
@@ -34,6 +36,63 @@ class ContactServices {
                     contact: contactDb,
                 },
             };
+        } catch (err) {
+            console.log(err);
+            return {
+                success: false,
+                statusCode: 500,
+                errors: err,
+                data: {
+                    message: "Internal Server Error"
+                },
+            };
+        }
+    }
+
+    async getContactById(req: Request) {
+        try {
+            let token = req.get("Authorization")
+
+            if (!token) throw new Error("Token not provided");
+
+            token = token.split(" ")[1]
+            const decoded = decodeToken(token);
+            if (!decoded?.email) throw new Error("Invalid token");
+
+            const userDb = await User.findOne({email: decoded.email})
+            if (!userDb) throw new Error(`User with email ${decoded.email} not found.`);
+
+            const contactId = req.params.id;
+
+            const querySearch = {
+                $and: [
+                    {user: userDb._id},
+                    {_id: new mongoose.Types.ObjectId(contactId)}
+                ]
+            }
+
+            const contactDb = await Contact.findOne(querySearch)
+
+            if (!contactDb) {
+                return {
+                    success: false,
+                    statusCode: 404,
+                    errors: "Could not find contact",
+                    data: {
+                        message: `Could not find contact with id ${req.params.id}`,
+                    }
+                }
+            }
+
+            return {
+                success: false,
+                statusCode: 200,
+                errors: null,
+                data: {
+                    contact: contactDb,
+                }
+            }
+
         } catch (err) {
             console.log(err);
             return {
@@ -116,7 +175,7 @@ class ContactServices {
             const userDb = await User.findOne({email: decoded.email})
             if (!userDb) throw new Error(`User with email ${decoded.email} not found.`);
 
-            if (userDb._id !== contactDb.user) {
+            if (!userDb._id.equals(contactDb.user)) {
                 return {
                     success: false,
                     statusCode: 403,
@@ -144,7 +203,7 @@ class ContactServices {
             if (Object.keys(updates).length === 0) {
                 return {
                     success: true,
-                    statusCode: 200,
+                    statusCode: 304,
                     data: {
                         message: "No changes detected.",
                         updatedFields: {}
@@ -152,7 +211,7 @@ class ContactServices {
                 };
             }
 
-            await Contact.updateOne({ _id: req.params.id }, { $set: updates });
+            await Contact.updateOne({_id: req.params.id}, {$set: updates});
 
             return {
                 success: true,
@@ -199,7 +258,7 @@ class ContactServices {
             const userDb = await User.findOne({email: decoded.email})
             if (!userDb) throw new Error(`User with email ${decoded.email} not found.`);
 
-            if (userDb._id !== contactDb.user) {
+            if (!userDb._id.equals(contactDb.user)) {
                 return {
                     success: false,
                     statusCode: 403,
