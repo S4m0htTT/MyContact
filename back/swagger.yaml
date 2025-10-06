@@ -4,8 +4,8 @@ info:
   description: "Documentation API MyContact"
   version: 1.0.0
 servers:
-  - url: http://localhost:5002/api/v1
-  - url: https://mycontact-az5e.onrender.com/api/v1
+  - url: http://localhost:5002/v1/api
+  - url: https://mycontact-az5e.onrender.com/v1/api
 tags:
   - name: User
     description: Requêtes sur les utilisateurs.
