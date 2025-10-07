@@ -131,4 +131,8 @@ Ces identifiants peuvent être utilisés pour tester l’authentification et acc
 | Développement | `http://localhost:5173`              | `http://localhost:5002/v1/api`               | `http://localhost:5002/api-docs`               |
 | Production    | `https://my-contact-sand.vercel.app` | `https://mycontact-az5e.onrender.com/v1/api` | `https://mycontact-az5e.onrender.com/api-docs` |
 
+> ℹ️ **Note importante sur l’environnement Render** :  
+Lorsqu’elle n’est pas sollicitée pendant un certain temps, l’API hébergée sur Render peut être mise en veille automatiquement.  
+Cela signifie que la **première requête** effectuée après une période d’inactivité peut prendre **plusieurs secondes** à répondre.  
+Ce comportement est normal et ne reflète pas un dysfonctionnement du backend.
 
