@@ -80,6 +80,7 @@ export default function Register() {
                         value={register.email}
                         onChange={handleChangeInputs}
                         type="email"
+                        id="email"
                     />
                     {registerError.email && (
                         <p className="text-sm text-red-300 mt-1 whitespace-pre-line">{registerError.email}</p>
@@ -93,6 +94,7 @@ export default function Register() {
                         onChange={handleChangeInputs}
                         type="password"
                         isPassword
+                        id="password"
                     />
                     {registerError.password && (
                         <p className="text-sm text-red-300 mt-1 whitespace-pre-line">{registerError.password}</p>
