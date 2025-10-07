@@ -1,7 +1,6 @@
 import {useNavigate, useParams} from "react-router";
 import useContactStore from "../stores/contactStore.ts";
 import {useEffect, useState} from "react";
-import {Loader} from "lucide-react";
 
 export default function EditContact() {
     const params = useParams();

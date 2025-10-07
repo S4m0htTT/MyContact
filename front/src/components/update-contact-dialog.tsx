@@ -74,6 +74,7 @@ export default function UpdateContactDialog({onClose, id}: CreateContactDialogPr
     const handleCreateContact = async () => {
         if (!validateForm()) return;
 
+        setIsLoading(true)
         const payload = {
             firstName: formData.firstName.trim(),
             lastName: formData.lastName.trim(),
@@ -81,7 +82,7 @@ export default function UpdateContactDialog({onClose, id}: CreateContactDialogPr
         }
 
         try {
-            await editContact(id, payload);
+            await editContact(id, payload).finally(() => setIsLoading(false));
             setFormData({firstName: "", lastName: "", phoneNumber: ""})
             setError("");
             onClose()

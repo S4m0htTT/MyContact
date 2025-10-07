@@ -53,6 +53,7 @@ export default function CreateContactDialog({onClose}: CreateContactDialogProps)
     const handleCreateContact = async() => {
         if (!validateForm()) return;
 
+        setIsLoading(true);
         const payload = {
             firstName: formData.firstName.trim(),
             lastName: formData.lastName.trim(),
@@ -60,7 +61,7 @@ export default function CreateContactDialog({onClose}: CreateContactDialogProps)
         }
 
         try {
-            await createContact(payload);
+            await createContact(payload).finally(() => setIsLoading(false));
             setFormData({firstName: "", lastName: "", phoneNumber: ""})
             setError("");
             onClose()
