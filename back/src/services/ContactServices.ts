@@ -85,7 +85,7 @@ class ContactServices {
             }
 
             return {
-                success: false,
+                success: true,
                 statusCode: 200,
                 errors: null,
                 data: {

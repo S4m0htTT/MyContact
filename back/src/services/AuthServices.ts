@@ -13,6 +13,10 @@ class AuthServices {
 
             if (token.trim() === "") throw new Error("Token not provided");
 
+            if (!token.startsWith("Bearer ") || token.split(" ").length !== 2) {
+                throw new Error("Invalid token format");
+            }
+
             token = token.split(" ")[1]
             const decoded = decodeToken(token);
 
