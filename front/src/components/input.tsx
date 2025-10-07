@@ -26,14 +26,14 @@ export default function Input({value, onChange, isPassword = false, type, id}: I
                 (
                     <EyeOff
                         strokeWidth={1.5}
-                        color="#000"
+                        color="#FFF"
                         className="cursor-pointer absolute top-1/2 right-3 -translate-y-1/2"
                         onClick={() => setShowPassword(false)}
                     />
                 ) : (
                     <Eye
                         strokeWidth={1.5}
-                        color="#000"
+                        color="#FFF"
                         className="cursor-pointer absolute top-1/2 right-3 -translate-y-1/2"
                         onClick={() => setShowPassword(true)}
                     />
