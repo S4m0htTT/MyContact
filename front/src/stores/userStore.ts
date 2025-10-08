@@ -82,6 +82,8 @@ const useUserStore = create<UserStore>((set) => ({
             set({userInfo: res.data.data.user})
         } catch (err) {
             console.error(err)
+            set({userToken: undefined, isAuthenticated: false, userInfo: null})
+            throw new Error("Erreur lors de la récupération des infos de l'utilisateur.");
         }
     }
 }))
