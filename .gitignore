@@ -5,6 +5,7 @@
 /back/.env
 /back/package-lock.json
 /back/pnpm-lock.yaml
+/back/src/.DS_Store
 
 /front/.idea/
 /front/node_modules/
@@ -20,3 +21,4 @@
 /front/yarn-error.log*
 /front/pnpm-debug.log*
 /front/lerna-debug.log*
+/front/src/.DS_Store
