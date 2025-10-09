@@ -63,6 +63,15 @@ const useUserStore = create<UserStore>((set) => ({
         if (token.trim() === "") return null
         try {
             const decoded = jwtDecode<UserJWT>(token)
+            const currentTime = Math.floor(Date.now() / 1000);
+
+            if (decoded.exp && decoded.exp < currentTime) {
+                console.error("Token expiré");
+                localStorage.removeItem("token");
+                set({ userToken: undefined, isAuthenticated: false, userInfo: null });
+                return null;
+            }
+
             set({isAuthenticated: true})
             return decoded.email
         } catch (err) {
